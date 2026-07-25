@@ -18,6 +18,4 @@ const reviewSchema=Joi.object({
 }).required()
 });
 
-module.exports = listingSchema;
-
-module.exports = reviewSchema;
+module.exports = { listingSchema, reviewSchema };
