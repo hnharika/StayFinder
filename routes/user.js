@@ -6,17 +6,18 @@ const passport = require("passport");
 const { saveRedirectedUrl, isLoggedin } = require("../middleware");
 const userController = require("../controllers/users");
 
-router.get("/signup", userController.renderSignupForm);
+router
+    .route("/signup")
+    .get(userController.renderSignupForm)
+    .post(userController.signup);
 
-router.post("/signup", userController.signup);
-
-router.get("/login", userController.renderLoginForm);
-
-
-router.post("/login", saveRedirectedUrl, passport.authenticate("local", {
-    failureRedirect: "/login", failureFlash: true
-}),
-    userController.login);
+router
+    .route("/login")
+    .get(userController.renderLoginForm)
+    .post(saveRedirectedUrl, passport.authenticate("local", {
+        failureRedirect: "/login", failureFlash: true
+    }),
+        userController.login);
 
 router.get("/logout", userController.logout);
 
