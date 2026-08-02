@@ -6,7 +6,7 @@ const { listingSchema, reviewSchema } = require("./schema");
 module.exports.isLoggedin = ((req, res, next) => {
     if (!req.isAuthenticated()) {
         req.session.redirectUrl = req.originalUrl;
-        req.flash("error", "Login to create a listing.")
+        req.flash("error", "Login")
         return res.redirect("/login");
     }
     next();

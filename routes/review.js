@@ -6,28 +6,10 @@ const Listing = require("../model/listing");
 const Review = require("../model/review");
 const { reviewSchema } = require("../schema");
 const { validateReview, isLoggedin, isReviewAuthor } = require("../middleware")
+const reviewController = require("../controllers/reviews");
 
+router.post("/", isLoggedin, validateReview, wrapAsync(reviewController.createReview));
 
-router.post("/", isLoggedin, validateReview, wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    let listing = await Listing.findById(id);
-    let newReview = new Review(req.body.review);
-    newReview.author = req.user._id;
-    listing.reviews.push(newReview);
-    await newReview.save()
-    await listing.save()
-    req.flash("success", "New Review Created.")
-    res.redirect(`/listings/${id}`);
-}));
-
-router.delete("/:reviewId",isLoggedin, isReviewAuthor, wrapAsync(async (req, res) => {
-    let { id, reviewId } = req.params;
-
-    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-
-    await Review.findByIdAndDelete(reviewId);
-    req.flash("success", "Review Deleted.")
-    res.redirect(`/listings/${id}`);
-}));
+router.delete("/:reviewId",isLoggedin, isReviewAuthor, wrapAsync(reviewController.destroyReview));
 
 module.exports = router;
